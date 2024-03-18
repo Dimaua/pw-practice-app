@@ -2,6 +2,8 @@
   "compileOnSave": false,
   "compilerOptions": {
     "importHelpers": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
     "module": "es2020",
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
@@ -21,3 +23,5 @@
     ]
   }
 }
+
+
