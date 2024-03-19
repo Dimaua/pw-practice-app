@@ -8,13 +8,7 @@ test.beforeEach(async ({ page }) => {
       body: JSON.stringify(tags),
     })
   })
-
-
   await page.goto('http://angular.realworld.how/')
-  await page.getByText('Sign in').click()
-  await page.getByRole('textbox', { name: 'Email' }).fill('pwtest@test.com')
-  await page.getByRole('textbox', { name: 'Password' }).fill('Welcome1')
-  await page.getByRole('button').click()
 
 })
 
@@ -38,7 +32,7 @@ test('has title', async ({ page }) => {
 })
 
 test('del article', async ({ page, request }) => {
-  const res = await request.post('https://api.realworld.io/api/users/login', {
+ /*  const res = await request.post('https://api.realworld.io/api/users/login', {
     data: {
       user:
         { email: "pwtest@test.com", password: "Welcome1" }
@@ -46,13 +40,13 @@ test('del article', async ({ page, request }) => {
   })
 
   const resBody = await res.json()
-  const token = resBody.user.token;
+  const token = resBody.user.token; */
 
   const articleRes = await request.post('https://api.realworld.io/api/articles/', {
     data: { "article": { "title": "auto article 1", "description": "automation 1", "body": "auto body", "tagList": [] } },
-    headers:{
+   /*  headers: {
       Authorization: `Token ${token}`
-    }
+    } */
   })
 
   expect(articleRes.status()).toEqual(201)
@@ -63,4 +57,41 @@ test('del article', async ({ page, request }) => {
   await page.getByText('Global Feed').click()
 
   await expect(page.locator('.article-preview h1').first()).not.toContainText('auto article 1')
+})
+
+test('add article', async ({ page, request }) => {
+  await page.getByText('New Article').click()
+  await page.getByRole('textbox', { name: 'Article Title' }).fill('Auto article')
+  await page.getByRole('textbox', { name: 'What\'s this article about?' }).fill('Auto description')
+  await page.getByRole('textbox', { name: 'Write your article (in markdown)' }).fill('Auto body')
+  await page.getByRole('button', { name: 'Publish Article' }).click()
+
+  const artRes = await page.waitForResponse('https://api.realworld.io/api/articles/')
+  const artResBody = await artRes.json()
+  const slug = artResBody.article.slug;
+
+
+  await expect(page.locator('.article-page h1')).toContainText('Auto article')
+
+  await page.getByText('Home').click()
+  await page.getByText('Global Feed').click()
+  await expect(page.locator('app-article-list h1').first()).toContainText('Auto article')
+
+  /* const res = await request.post('https://api.realworld.io/api/users/login', {
+    data: {
+      user:
+        { email: "pwtest@test.com", password: "Welcome1" }
+    }
+  })
+
+  const resBody = await res.json()
+  const token = resBody.user.token; */
+
+  const resDel = await request.delete(`https://api.realworld.io/api/articles/${slug}`, {
+    /* headers: {
+      Authorization: `Token ${token}`
+    } */
+  })
+
+  expect(resDel.status()).toEqual(204)
 })
