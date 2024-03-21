@@ -4,7 +4,7 @@ import { defineConfig, devices } from '@playwright/test';
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
  */
-// require('dotenv').config();
+require('dotenv').config();
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -25,11 +25,11 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    // baseURL: 'http://127.0.0.1:3000',
+    baseURL: 'http://localhost:4200/',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
-    extraHTTPHeaders:{
+    extraHTTPHeaders: {
       'Authorization': `Token ${process.env.ACCESS_TOKEN}`
     }
   },
@@ -37,7 +37,7 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
-      name:'setup', testMatch:'auth.setup.ts'
+      name: 'setup', testMatch: 'auth.setup.ts'
     },
     {
       name: 'chromium',
@@ -47,14 +47,21 @@ export default defineConfig({
 
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'], storageState: '.auth/user.json'},
+      use: { ...devices['Desktop Firefox'], storageState: '.auth/user.json' },
       dependencies: ['setup']
     },
 
     {
       name: 'webkit',
-      use: { ...devices['Desktop Safari'], storageState: '.auth/user.json'},
+      use: { ...devices['Desktop Safari'], storageState: '.auth/user.json' },
       dependencies: ['setup']
+    },
+    {
+      name: 'mobile',
+      testMatch: 'testMobile.spec.ts',
+      use:{
+        ...devices['iPhone 13 Pro']
+      }
     },
 
     /* Test against mobile viewports. */

@@ -24,6 +24,12 @@ async submitGridFormCredsOpt(email: string, password: string, optionText: string
 
   }
 
+  async submitInlineFormCreds(fullName: string, email: string) {
+    const inlineForm = this.page.locator('nb-card', { hasText: 'Inline form' })
+    await inlineForm.getByPlaceholder('Jane Doe').fill(fullName)
+    await inlineForm.getByRole('textbox', { name: 'Email' }).fill(email)
+    await inlineForm.getByRole('button',{name:'Submit'}).click()
+  }
 
 
 
