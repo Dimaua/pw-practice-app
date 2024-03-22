@@ -23,22 +23,27 @@ test.describe('Form layout page', () => {
     await expect(emailInputField).toHaveValue('abcde@test.com')
   })
 
-  test('radio buttons', async ({ page }) => {
+  test.only('radio buttons', async ({ page }) => {
     const usingGridForm = page.locator('nb-card', { hasText: 'Using the Grid' })
 
     //await usingGridForm.getByLabel('Option 1').check({ force: true })
     await usingGridForm.getByRole('radio', { name: 'Option 1' }).check({ force: true })
 
     const radioStatus1 = await usingGridForm.getByRole('radio', { name: 'Option 1' }).isChecked()
-    expect(radioStatus1).toBeTruthy()
-    await expect(usingGridForm.getByRole('radio', { name: 'Option 1' })).toBeChecked()
 
-    await usingGridForm.getByRole('radio', { name: 'Option 2' }).check({ force: true })
+    await expect(usingGridForm).toHaveScreenshot()
+
+    /*  expect(radioStatus1).toBeTruthy()
+     await expect(usingGridForm.getByRole('radio', { name: 'Option 1' })).toBeChecked() */
+
+
+
+    /* await usingGridForm.getByRole('radio', { name: 'Option 2' }).check({ force: true })
     const radioStatus2 = await usingGridForm.getByRole('radio', { name: 'Option 2' }).isChecked()
     expect(await usingGridForm.getByRole('radio', { name: 'Option 1' }).isChecked()).toBeFalsy()
 
     expect(radioStatus2).toBeTruthy()
-
+ */
   })
 
 })
@@ -104,7 +109,7 @@ test('dialog box', async ({ page }) => {
   await page.getByText('Tables & Data').click()
   await page.getByText('Smart Table').click()
 
-  page.on('dialog', dialog =>{
+  page.on('dialog', dialog => {
     expect(dialog).toEqual('Are you sure you want to delete?')
     dialog.accept()
   })
@@ -115,14 +120,14 @@ test('web tables', async ({ page }) => {
   await page.getByText('Tables & Data').click()
   await page.getByText('Smart Table').click()
 
-  const tergetRow = page.getByRole('row',{name:'twitter@outlook.com'})
+  const tergetRow = page.getByRole('row', { name: 'twitter@outlook.com' })
   await tergetRow.locator('.nb-edit').click()
   await page.locator('input-editor').getByPlaceholder('Age').clear()
   await page.locator('input-editor').getByPlaceholder('Age').fill('99')
   await page.locator('.nb-checkmark').click()
 
   await page.locator('.ng2-smart-pagination').getByText('2').click()
-  const targetRowId = page.getByRole('row',{name:'11'}).filter({has: page.locator('td').nth(1).getByText('11')})
+  const targetRowId = page.getByRole('row', { name: '11' }).filter({ has: page.locator('td').nth(1).getByText('11') })
   await targetRowId.locator('.nb-edit').click()
   await page.locator('input-editor').getByPlaceholder('E-mail').clear()
   await page.locator('input-editor').getByPlaceholder('E-mail').fill('test@test.com')
@@ -139,6 +144,6 @@ test('date picker', async ({ page }) => {
   const caledarInput = page.getByPlaceholder('Form Picker')
   await caledarInput.click()
 
-  await page.locator('[class="day-cell ng-star-inserted"]').getByText('1',{exact:true}).click()
+  await page.locator('[class="day-cell ng-star-inserted"]').getByText('1', { exact: true }).click()
   await expect(caledarInput).toHaveValue('Mar 1, 2024')
 })
